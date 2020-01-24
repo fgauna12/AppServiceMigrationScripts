@@ -6,18 +6,16 @@
         $XmlConfig
     )
 
+    $appSettings = [System.Text.StringBuilder]::new()
     foreach ($appSetting in $XmlConfig.configuration.appSettings.add){
-#         $segment = @"
-# {
-#     "name": "SitePath",
-#     "value": "[parameters('configSitePath')]"
-# },
-# "@      
-        Write-Host "app setting key $($appSetting.key)"
-        Write-Host "app setting key $($appSetting.value)"
+        $appSetting = @"
+{
+    "name": "$($appSetting.key)",
+    "value": "[parameters('config$($appSetting.key)')]"
+},
+"@
+        [void]$appSettings.AppendLine($appSetting)
     }
 
-    
-
-
+    Write-Output $appSettings.ToString()
 }

@@ -17,7 +17,11 @@ Describe "Convert-XmlConfigToSiteConfig" {
 </configuration>
 '@
 
-        $doc | Convert-XmlConfigToSiteConfig
+        $output = $doc | Convert-XmlConfigToSiteConfig
+        
+        
+        $output | Should MatchExactly 'SitePath'
+        $output | Should MatchExactly 'configSitePath'
         
     }
 }
