@@ -20,8 +20,8 @@ Describe "Convert-XmlConfigToSiteConfig" {
         $output = $doc | Convert-XmlConfigToSiteConfig
         
         
-        $output | Should MatchExactly 'SitePath'
-        $output | Should MatchExactly 'configSitePath'
+        $output.ArmTemplateAppSettings | Should MatchExactly 'SitePath'
+        $output.ArmTemplateAppSettings | Should MatchExactly 'configSitePath'
         
     }
 
@@ -43,8 +43,48 @@ Describe "Convert-XmlConfigToSiteConfig" {
         $output = $doc | Convert-XmlConfigToSiteConfig
         
         
-        $output | Should MatchExactly 'email'
-        $output | Should MatchExactly 'configEmail'
-        
+        $output.ArmTemplateAppSettings | Should MatchExactly 'email'
+        $output.ArmTemplateAppSettings | Should MatchExactly 'configEmail'        
     }
+
+    It "Converts to arm template parameter" {
+        $doc = [xml]@'
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <appSettings>
+        <!--Website-->
+        <add key="SitePath" value="http://google.com" />
+        <add key="WebSiteBase" value="dev" />
+        <add key="email" value="hello@google.com" />
+        <add key="dev_or_prod" value="dev" />
+        <add key="Config" value="Dev" />
+    </appSettings>
+</configuration>
+'@
+
+        $output = $doc | Convert-XmlConfigToSiteConfig
+        
+        $output.ArmTemplateParams | Should MatchExactly 'configEmail'
+    }
+
+    It "Converts to pipeline override" {
+        $doc = [xml]@'
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <appSettings>
+        <!--Website-->
+        <add key="SitePath" value="http://google.com" />
+        <add key="WebSiteBase" value="dev" />
+        <add key="email" value="hello@google.com" />
+        <add key="dev_or_prod" value="dev" />
+        <add key="Config" value="Dev" />
+    </appSettings>
+</configuration>
+'@
+
+        $output = $doc | Convert-XmlConfigToSiteConfig
+        
+        $output.PipelineOverrides | Should Match '-configEmail'
+    }
+
 }
