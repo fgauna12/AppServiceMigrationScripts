@@ -21,7 +21,7 @@
         "type": "string"
     },
 "@
-        $pipelineOverride = "-config$($key) `$(Config.$key`)"
+        $pipelineOverride = "-config$($key) `"`$(Config.$key`)`""
         $configMap +=  [PSCustomObject]@{
             Name = "Config.$key"
             Value = $appSetting.value
